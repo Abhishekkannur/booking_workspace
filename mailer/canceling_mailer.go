@@ -6,9 +6,9 @@ import (
 	"workspace_booking/model"
 )
 
-func BookingMailer(bookingId int16, reminder bool) {
+func CancelMail(bookingId int16) {
 
-	templatePath := "/text/email-template.html"
+	templatePath := "/text/email-canceling.html"
 	particitpants := model.GetBookingParticipantsDetailsByBookingId(bookingId)
 
 	recipients := make([]*model.Recipient, 0)
@@ -19,21 +19,19 @@ func BookingMailer(bookingId int16, reminder bool) {
 		recipient.Email = participant.UserEmail
 		recipients = append(recipients, recipient)
 	}
+	cancelCommonMailer, _ := model.FetchBooking(bookingId)
+	if cancelCommonMailer.Common_mail != "" {
 
-	commonmailer, _ := model.FetchBooking(bookingId)
-	if commonmailer.Common_mail != "" {
-
-		combookings := strings.SplitAfter(commonmailer.Common_mail, ",")
-		for _, commonemail := range combookings {
-			commonrecipient := new(model.Recipient)
-			commonrecipient.Name = commonemail
-			commonrecipient.Email = commonemail
-			recipients = append(recipients, commonrecipient)
+		cancelcommonMail := strings.SplitAfter(cancelCommonMailer.Common_mail, ",")
+		for _, commonemail := range cancelcommonMail {
+			recipient := new(model.Recipient)
+			recipient.Name = commonemail
+			recipient.Email = commonemail
+			recipients = append(recipients, recipient)
 
 		}
 
 	}
-
 	const (
 		layoutISO  = "2006-01-02"
 		layoutUS   = "Monday, Jan 2 2006"
@@ -42,17 +40,13 @@ func BookingMailer(bookingId int16, reminder bool) {
 
 	bookingData, _ := model.FetchBooking(bookingId)
 
-	subject := "Invitation for " + bookingData.Purpose
-
-	if reminder == true {
-		subject = "Reminder: " + subject
-	}
+	subject := "This is to note " + bookingData.Purpose
 
 	date := bookingData.FromDateTime
 
 	formatDate := date.Format(layoutUS)
 
-	message := "This would informed you that meeting take place " + formatDate
+	message := "This would informed you that the meeting has been canceled which is held on " + formatDate
 
 	StartTime := date.Format(timeLayout)
 

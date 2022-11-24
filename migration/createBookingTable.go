@@ -17,6 +17,9 @@ func CreateBookingsTable() {
 		from_datetime TIMESTAMP NOT NULL,
 		to_datetime TIMESTAMP NOT NULL,
 		purpose VARCHAR ( 255 ),
+		comment VARCHAR(500),
+		active bool DEFAULT 'true',
+		common_Mail VARCHAR(225),
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)
 	`)

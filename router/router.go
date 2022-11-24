@@ -196,18 +196,12 @@ func SetupRoutes(app *fiber.App) {
 		}
 		return c.SendStatus(fiber.StatusForbidden)
 	})
-	api.Delete("/delete/:id", func(c *fiber.Ctx) error {
-		delete := c.Locals("verify")
-		if delete == "true" {
-			return controller.DeleteBookings(c)
+	api.Put("/cancel/:id", func(c *fiber.Ctx) error {
+		user := c.Locals("verify")
+		if user == "true" {
+			return controller.CanceledBookings(c)
 		}
 		return c.SendStatus(fiber.StatusForbidden)
 	})
-	api.Post("/comment", func(c *fiber.Ctx) error {
-		com := c.Locals("verify")
-		if com == "true" {
-			return controller.CreateComment(c)
-		}
-		return c.SendStatus(fiber.StatusForbidden)
-	})
+
 }
