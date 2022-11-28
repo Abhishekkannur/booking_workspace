@@ -143,13 +143,13 @@ func CanceledBookings(c *fiber.Ctx) error {
 	}
 	cancelBooking := model.Booking{Id: int16(i)}
 
-	er := model.CancelBooking(cancelBooking)
-	if er == nil {
+	err := model.CancelBooking(cancelBooking)
+	if err == nil {
 		go mailer.CancelMail(cancelBooking.Id)
 	}
 
-	if er != nil {
-		return utility.ErrResponse(c, "Error in  canceling", 400, er)
+	if err != nil {
+		return utility.ErrResponse(c, "Error in  canceling", 400, err)
 	}
 
 	return c.JSON(fiber.Map{
